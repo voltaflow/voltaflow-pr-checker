@@ -1,6 +1,6 @@
 {
   "name": "voltaflow-pr-check",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "GitHub Action that connects to Deepseek using the openai library to interpret logs and then comments on the PR with the interpretation.",
   "main": "index.js",
   "type": "module",
