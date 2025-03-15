@@ -1,0 +1,9 @@
+2025-03-15T10:23:45.123Z ERROR [Server] Failed to connect to database at postgres://user:******@db.example.com:5432/mydb
+2025-03-15T10:23:46.234Z ERROR [Server] Connection error: ECONNREFUSED
+2025-03-15T10:23:47.345Z WARN [Server] Retrying database connection (attempt 1/5)
+2025-03-15T10:23:50.456Z ERROR [Server] Connection timeout after 3000ms
+2025-03-15T10:23:51.567Z ERROR [Server] Could not establish database connection
+2025-03-15T10:23:52.678Z FATAL [Server] Server initialization failed: Cannot connect to database
+2025-03-15T10:23:52.789Z INFO [Server] Shutting down application
+2025-03-15T10:23:52.890Z INFO [Server] All connections closed
+2025-03-15T10:23:52.901Z INFO [Server] Exiting with code 1

@@ -1,0 +1,10 @@
+2025-03-15T15:30:12.123Z INFO [WebServer] Server starting on port 3000
+2025-03-15T15:30:12.345Z INFO [WebServer] Loading configuration from /etc/myapp/config.json
+2025-03-15T15:30:12.567Z WARN [WebServer] Configuration file contains deprecated options
+2025-03-15T15:30:12.789Z WARN [WebServer] The 'oldCacheMethod' option will be removed in version 2.0
+2025-03-15T15:30:13.012Z INFO [WebServer] Connected to Redis cache at redis://localhost:6379
+2025-03-15T15:30:13.234Z WARN [WebServer] Memory usage exceeds recommended threshold (85%)
+2025-03-15T15:30:13.456Z WARN [WebServer] Some routes are missing rate limiting configuration
+2025-03-15T15:30:13.678Z INFO [WebServer] Successfully registered 24 routes
+2025-03-15T15:30:13.901Z INFO [WebServer] Server successfully started and is accepting connections
+2025-03-15T15:30:14.123Z INFO [WebServer] Visit http://localhost:3000 to access the application

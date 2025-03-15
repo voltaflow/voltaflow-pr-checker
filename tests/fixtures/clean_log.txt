@@ -1,0 +1,14 @@
+2025-03-15T08:45:01.123Z INFO [BuildSystem] Starting build process for project: myapp
+2025-03-15T08:45:01.234Z INFO [BuildSystem] Using Node.js v18.9.0
+2025-03-15T08:45:01.345Z INFO [BuildSystem] Environment: production
+2025-03-15T08:45:01.456Z INFO [BuildSystem] Cleaning output directory
+2025-03-15T08:45:02.567Z INFO [BuildSystem] Running npm install
+2025-03-15T08:45:12.678Z INFO [BuildSystem] Packages installed successfully
+2025-03-15T08:45:12.789Z INFO [BuildSystem] Running tests
+2025-03-15T08:45:20.890Z INFO [BuildSystem] All tests passed (124 tests)
+2025-03-15T08:45:20.901Z INFO [BuildSystem] Building application
+2025-03-15T08:45:30.012Z INFO [BuildSystem] Application built successfully
+2025-03-15T08:45:30.123Z INFO [BuildSystem] Optimizing bundle size
+2025-03-15T08:45:32.234Z INFO [BuildSystem] Final bundle size: 2.4MB
+2025-03-15T08:45:32.345Z INFO [BuildSystem] Deployment package created at /var/builds/myapp-1.0.0.zip
+2025-03-15T08:45:32.456Z INFO [BuildSystem] Build completed successfully
