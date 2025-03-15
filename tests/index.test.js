@@ -187,22 +187,160 @@ describe('voltaflow-pr-check', () => {
   });
 });
 
-// Uncomment this test if you want to do actual file reading tests
-// describe('voltaflow-pr-check with real log fixtures', () => {
-//   test('should process error logs correctly', async () => {
-//     const errorLogs = fs.readFileSync(
-//       path.join(__dirname, 'fixtures/error_log.txt'),
-//       'utf8'
-//     );
-//     
-//     core.getInput.mockImplementation((name) => {
-//       if (name === 'github_token') return 'fake-token';
-//       if (name === 'deepseek_api_key') return 'fake-api-key';
-//       if (name === 'log_content') return errorLogs;
-//       return '';
-//     });
-//     
-//     // This test would need actual API calls, so it's commented out
-//     // You could use it with proper mocking for integration testing
-//   });
-// });
+describe('voltaflow-pr-check with real DeepSeek API', () => {
+  // Skip these tests by default if no API key is provided
+  // Run with: DEEPSEEK_API_KEY=your_key jest
+  const realApiKey = process.env.DEEPSEEK_API_KEY;
+  const testName = realApiKey ? 
+    'should process logs with actual DeepSeek API' : 
+    'should process logs with actual DeepSeek API (skipped - no API key)';
+  
+  const testFn = realApiKey ? test : test.skip;
+  
+  beforeEach(() => {
+    // Reset but don't mock OpenAI for real API test
+    jest.resetAllMocks();
+    jest.unmock('openai');
+    
+    // Only mock GitHub and core actions
+    github.context = {
+      repo: { owner: 'test-owner', repo: 'test-repo' },
+      issue: { number: 123 }
+    };
+    
+    const mockCreateComment = jest.fn().mockResolvedValue({});
+    github.getOctokit.mockReturnValue({
+      rest: {
+        issues: {
+          createComment: mockCreateComment
+        }
+      }
+    });
+    
+    // Mock console to capture output without noise
+    console.log = jest.fn();
+    console.error = jest.fn();
+  });
+  
+  testFn('should process error logs correctly', async () => {
+    const errorLogs = fs.readFileSync(
+      path.join(__dirname, 'fixtures/error_log.txt'),
+      'utf8'
+    );
+    
+    // Set up inputs but use real API key
+    core.getInput.mockImplementation((name) => {
+      if (name === 'github_token') return 'fake-token';
+      if (name === 'deepseek_api_key') return realApiKey;
+      if (name === 'log_content') return errorLogs;
+      return '';
+    });
+    
+    // Re-import the module to use real OpenAI instance
+    jest.resetModules();
+    const OpenAIModule = require('openai');
+    
+    // Spy on the real OpenAI methods to verify they're called correctly
+    const createCompletionSpy = jest.spyOn(
+      OpenAIModule.prototype.chat.completions, 
+      'create'
+    );
+    
+    // Run the main module
+    const main = require('../index.js');
+    
+    // Wait for all promises to resolve
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    
+    // Verify actual API call was made
+    expect(createCompletionSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        model: "deepseek-chat",
+        messages: expect.arrayContaining([
+          { role: "system", content: expect.stringContaining("expert in interpreting computer system logs") },
+          { role: "user", content: expect.stringContaining("Failed to connect to database") }
+        ])
+      })
+    );
+    
+    // Verify GitHub comment would be created
+    const octokit = github.getOctokit();
+    expect(octokit.rest.issues.createComment).toHaveBeenCalledWith(
+      expect.objectContaining({
+        owner: 'test-owner',
+        repo: 'test-repo',
+        issue_number: 123
+      })
+    );
+    
+    // Output was set
+    expect(core.setOutput).toHaveBeenCalledWith(
+      'interpretation',
+      expect.any(String)
+    );
+  }, 30000); // Increase timeout for API call
+  
+  testFn('should process warning logs correctly', async () => {
+    const warningLogs = fs.readFileSync(
+      path.join(__dirname, 'fixtures/warning_log.txt'),
+      'utf8'
+    );
+    
+    // Set up inputs with real API key
+    core.getInput.mockImplementation((name) => {
+      if (name === 'github_token') return 'fake-token';
+      if (name === 'deepseek_api_key') return realApiKey;
+      if (name === 'log_content') return warningLogs;
+      return '';
+    });
+    
+    // Re-import and run the main module
+    jest.resetModules();
+    const main = require('../index.js');
+    
+    // Wait for all promises to resolve
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    
+    // Verify GitHub comment would be created
+    const octokit = github.getOctokit();
+    expect(octokit.rest.issues.createComment).toHaveBeenCalled();
+    
+    // Output was set
+    expect(core.setOutput).toHaveBeenCalledWith(
+      'interpretation',
+      expect.any(String)
+    );
+  }, 30000);
+  
+  testFn('should process clean logs correctly', async () => {
+    const cleanLogs = fs.readFileSync(
+      path.join(__dirname, 'fixtures/clean_log.txt'),
+      'utf8'
+    );
+    
+    // Set up inputs with real API key
+    core.getInput.mockImplementation((name) => {
+      if (name === 'github_token') return 'fake-token';
+      if (name === 'deepseek_api_key') return realApiKey;
+      if (name === 'log_content') return cleanLogs;
+      return '';
+    });
+    
+    // Re-import and run the main module
+    jest.resetModules();
+    const main = require('../index.js');
+    
+    // Wait for all promises to resolve
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    
+    // Verify GitHub comment would be created
+    const octokit = github.getOctokit();
+    expect(octokit.rest.issues.createComment).toHaveBeenCalled();
+    
+    // Output was set
+    expect(core.setOutput).toHaveBeenCalledWith(
+      'interpretation',
+      expect.any(String)
+    );
+  }, 30000);
+});

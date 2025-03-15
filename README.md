@@ -134,7 +134,10 @@ To test this action locally:
 
 1. Clone the repository
 2. Install dependencies with `npm install`
-3. Run tests with `npm test`
+3. Run tests with:
+   - `npm test` - Runs all tests with mocked API calls
+   - `DEEPSEEK_API_KEY=your-api-key npm test` - Runs tests including real API calls to DeepSeek
+
 4. For manual testing, you can use the test script:
 
 ```bash
@@ -145,6 +148,8 @@ export GITHUB_TOKEN=your-github-token
 # Run with an example log file
 node index.js < test_logs.txt
 ```
+
+The test suite includes both mocked tests and real API integration tests that will verify proper connection to the DeepSeek API. The real API tests are skipped by default unless you provide a DEEPSEEK_API_KEY environment variable.
 
 ## Contributions
 

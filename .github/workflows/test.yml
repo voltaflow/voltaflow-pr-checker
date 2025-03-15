@@ -21,5 +21,41 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Run tests
+      - name: Run tests with mocks
         run: npm test
+        
+  test-with-api:
+    runs-on: ubuntu-latest
+    # Run on main branch pushes
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Check for DEEPSEEK_API_KEY
+        id: check_secret
+        # This will set the output 'has_secret' to 'true' if the secret exists
+        run: |
+          if [ -n "${{ secrets.DEEPSEEK_API_KEY }}" ]; then
+            echo "has_secret=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_secret=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Run tests with real API
+        if: steps.check_secret.outputs.has_secret == 'true'
+        run: npm test
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          
+      - name: Skip real API tests
+        if: steps.check_secret.outputs.has_secret != 'true'
+        run: echo "Skipping real API tests - DEEPSEEK_API_KEY secret not available"
