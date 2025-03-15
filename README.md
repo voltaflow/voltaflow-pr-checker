@@ -44,7 +44,7 @@ jobs:
       
       # Use this action to interpret the logs
       - name: Interpret logs with Voltaflow
-        uses: your-username/voltaflow-pr-check@v1
+        uses: voltaflow/voltaflow-pr-checker@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           deepseek_api_key: ${{ secrets.DEEPSEEK_API_KEY }}
