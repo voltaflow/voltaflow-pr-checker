@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "GitHub Action that connects to Deepseek using the openai library to interpret logs and then comments on the PR with the interpretation.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
   },
   "keywords": [
     "GitHub",

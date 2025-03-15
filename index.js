@@ -116,5 +116,10 @@ async function commentOnPR(token, body) {
   }
 }
 
-// Execute the main function
-main();
+// Execute the main function only if this file is run directly (not imported)
+if (import.meta.url === new URL(import.meta.url).href) {
+  main();
+}
+
+// Export the main function for testing
+export { main, formatResponse, commentOnPR };
